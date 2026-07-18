@@ -63,8 +63,4 @@
 npx serve .
 ```
 
-구글 시트 연동을 사용하려면 `index.html` 하단 스크립트의 `SCRIPT_URL`을 자신의 Google Apps Script 배포 URL로 교체 필요
-
-```js
-const SCRIPT_URL = '여기에_복사한_웹앱_URL을_붙여넣으세요';
-```
+데이터 연동을 확인하려면 `index.html` 상단의 `API_URL`을 자신의 Google Apps Script 배포 URL로 교체 필요
