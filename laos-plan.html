@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>라오스 여행 일정</title>
+<link
+  rel="stylesheet"
+  as="style"
+  crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+/>
+<style>
+  :root {
+    --blue: #002868;    /* 라오스 파랑 */
+    --blue-d: #001a45;
+    --red: #ce1126;     /* 라오스 빨강 */
+    --red-d: #a80e1f;
+    --cat1: #5b7ea8;    /* 식당 — 차분한 블루 */
+    --cat2: #7f9cbd;    /* 카페 — 중간 톤 */
+    --cat3: #a3b8d0;    /* 관광지 — 연한 톤 */
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --bg: #f4f6fa;
+    --card: #ffffff;
+    --shadow: 0 8px 24px rgba(0, 40, 104, .08);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: var(--ink);
+    background: #e9edf4;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 28px 14px;
+  }
+
+  /* ── 앱 프레임 ── */
+  .app-frame {
+    width: 100%;
+    max-width: 430px;
+    background: var(--bg);
+    border-radius: 30px;
+    box-shadow: 0 30px 60px rgba(0, 30, 80, .18), 0 2px 8px rgba(0, 30, 80, .06);
+    overflow: hidden;
+    align-self: flex-start;
+  }
+  .content { padding: 0 16px 24px; }
+
+  /* ── 헤더 ── */
+  .hero {
+    text-align: center;
+    color: #fff;
+    background: var(--blue);
+    padding: 30px 22px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-icon {
+    position: absolute;
+    right: -10px; bottom: -22px;
+    width: 130px; height: 130px;
+    color: #fff;
+    opacity: .12;
+    transform: rotate(-8deg);
+  }
+  .hero .badge {
+    display: inline-block;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    background: rgba(255, 255, 255, .18);
+    padding: 4px 11px; border-radius: 999px;
+    margin-bottom: 10px; text-transform: uppercase;
+  }
+  .hero h1 { font-size: 23px; font-weight: 800; letter-spacing: -.5px; }
+  .hero p { font-size: 12.5px; opacity: .85; margin-top: 7px; }
+
+  /* ── 통계 바 ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    margin: 16px 0;
+  }
+  .stat {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 11px 4px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat .num { font-size: 17px; font-weight: 800; color: var(--blue); }
+  .stat .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 600; white-space: nowrap; }
+
+  /* ── 카드 (폼) ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px 18px;
+  }
+  .card h2 { font-size: 15px; font-weight: 800; margin-bottom: 14px; }
+
+  .field { margin-top: 13px; }
+  .field:first-child { margin-top: 0; }
+  .field-row { display: grid; grid-template-columns: 1fr 96px; gap: 10px; align-items: start; }
+
+  label {
+    display: block;
+    font-size: 12.5px; font-weight: 700; color: #374151;
+    margin-bottom: 6px;
+  }
+  label .opt { font-weight: 500; color: var(--muted); font-size: 11.5px; }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 11px 13px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #f9fafb;
+    border: 1.5px solid var(--line);
+    border-radius: 11px;
+    transition: border-color .18s, box-shadow .18s, background .18s;
+  }
+  input::placeholder, textarea::placeholder { color: #9ca3af; }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 4px rgba(0, 40, 104, .10);
+  }
+  textarea { resize: vertical; min-height: 76px; line-height: 1.5; }
+
+  /* ── 카테고리 세그먼트 ── */
+  .segment { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .segment input { display: none; }
+  .segment label {
+    margin: 0;
+    text-align: center;
+    padding: 11px 6px;
+    border: 1.5px solid var(--line);
+    border-radius: 11px;
+    background: #f9fafb;
+    cursor: pointer;
+    font-weight: 600; font-size: 13px;
+    color: var(--muted);
+    transition: all .16s;
+    user-select: none;
+  }
+  .segment label:hover { border-color: #c7d2e5; }
+  .segment input:checked + label {
+    border-color: var(--blue);
+    background: rgba(0, 40, 104, .06);
+    color: var(--blue);
+    box-shadow: 0 4px 10px rgba(0, 40, 104, .12);
+  }
+
+  /* ── 별점 ── */
+  .stars { display: flex; gap: 3px; }
+  .stars .star {
+    font-size: 27px;
+    cursor: pointer;
+    color: #d8dde5;
+    transition: transform .12s, color .12s;
+    line-height: 1;
+  }
+  .stars .star:hover { transform: scale(1.18); }
+  .stars .star.on { color: #ffb400; }
+
+  /* ── 제출 버튼 ── */
+  .submit {
+    margin-top: 16px;
+    width: 100%;
+    padding: 13px;
+    font-size: 14px; font-weight: 800;
+    color: #fff;
+    background: var(--blue);
+    border: none; border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: .3px;
+    box-shadow: 0 8px 18px rgba(0, 40, 104, .28);
+    transition: transform .12s, box-shadow .18s, opacity .18s;
+  }
+  .submit:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0, 40, 104, .34); }
+  .submit:active { transform: translateY(0); }
+  .submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+  /* ── 필터 칩 ── */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 22px 0 12px;
+  }
+  .chip {
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--card);
+    cursor: pointer;
+    color: var(--muted);
+    transition: all .15s;
+    user-select: none;
+  }
+  .chip .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .chip.active { color: #fff; border-color: transparent; }
+  .chip[data-cat="전체"].active { background: var(--ink); }
+  .chip[data-cat="식당"].active { background: var(--cat1); }
+  .chip[data-cat="카페"].active { background: var(--cat2); }
+  .chip[data-cat="관광지"].active { background: var(--cat3); }
+
+  /* ── 일정 목록 (일차별) ── */
+  .list-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .list-head h3 { font-size: 15.5px; font-weight: 800; }
+
+  .day-group { margin-top: 20px; }
+  .day-group:first-child { margin-top: 2px; }
+  .day-title {
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 10px;
+  }
+  .day-title .badge {
+    font-size: 11px; font-weight: 800; color: #fff;
+    background: var(--red);
+    padding: 4px 11px; border-radius: 999px;
+    white-space: nowrap;
+  }
+  .day-title.none .badge { background: #9aa3b2; }
+  .day-title .line { flex: 1; height: 1px; background: var(--line); }
+
+  .empty {
+    text-align: center; color: var(--muted);
+    padding: 32px 18px;
+    background: var(--card);
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    font-size: 13px;
+  }
+
+  .item {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 13px 15px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow);
+    border-left: 5px solid var(--blue);
+    animation: pop .3s ease;
+  }
+  .item[data-cat="식당"] { border-left-color: var(--cat1); }
+  .item[data-cat="카페"] { border-left-color: var(--cat2); }
+  .item[data-cat="관광지"] { border-left-color: var(--cat3); }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .item-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .item h4 { font-size: 14.5px; font-weight: 800; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .item .cat {
+    font-size: 10px; font-weight: 700; color: var(--blue);
+    background: rgba(0, 40, 104, .08);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .item .rate { font-size: 12px; color: #ffb400; white-space: nowrap; }
+  .item .memo { font-size: 12.5px; color: #4b5563; line-height: 1.5; margin-top: 6px; }
+
+  .item-actions { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
+  .map-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--red); color: #fff !important;
+    text-decoration: none;
+    padding: 6px 12px; border-radius: 9px;
+    font-size: 11.5px; font-weight: 700;
+    transition: background .16s, transform .12s;
+  }
+  .map-link:hover { background: var(--red-d); transform: translateY(-1px); }
+  .del-btn {
+    margin-left: auto;
+    background: none; border: none;
+    color: #b0b6c0;
+    font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+    padding: 7px 9px;
+    border-radius: 8px;
+    transition: color .15s, background .15s;
+  }
+  .del-btn:hover { color: var(--red); background: rgba(206, 17, 38, .08); }
+
+  /* ── 토스트 ── */
+  .toast {
+    position: fixed;
+    left: 50%; top: 50%;
+    transform: translate(-50%, calc(-50% + 20px));
+    background: var(--ink); color: #fff;
+    padding: 13px 22px; border-radius: 12px;
+    font-size: 14px; font-weight: 600;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, -50%); }
+  .toast.err { background: var(--red); }
+
+  footer {
+    text-align: center;
+    font-size: 10.5px;
+    color: #a1a8b5;
+    margin-top: 26px;
+  }
+
+  @media (max-width: 380px) {
+    .app-frame { border-radius: 22px; }
+    .content { padding: 0 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <div class="hero">
+    <svg class="hero-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 6.4 11.3 7.11 11.95a1.3 1.3 0 0 0 1.78 0C13.6 21.3 20 15.25 20 10c0-4.42-3.58-8-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+    </svg>
+    <span class="badge">Laos Trip</span>
+    <h1>라오스 여행 일정</h1>
+    <p>가고 싶은 장소를 등록하고 일차별로 정리해보세요</p>
+  </div>
+
+  <div class="content">
+  <div class="stats" id="stats">
+    <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">전체</div></div>
+    <div class="stat"><div class="num" id="statFood">0</div><div class="lbl">식당</div></div>
+    <div class="stat"><div class="num" id="statCafe">0</div><div class="lbl">카페</div></div>
+    <div class="stat"><div class="num" id="statSpot">0</div><div class="lbl">관광지</div></div>
+  </div>
+
+  <form id="planForm" class="card" novalidate>
+    <h2>새 일정 등록</h2>
+
+    <div class="field">
+      <label for="placeName">장소명</label>
+      <input type="text" id="placeName" name="placeName" placeholder="예: Patuxay Monument" required />
+    </div>
+
+    <div class="field">
+      <label>카테고리</label>
+      <div class="segment">
+        <input type="radio" id="cat-food" name="category" value="식당" required />
+        <label for="cat-food">식당</label>
+
+        <input type="radio" id="cat-cafe" name="category" value="카페" />
+        <label for="cat-cafe">카페</label>
+
+        <input type="radio" id="cat-spot" name="category" value="관광지" />
+        <label for="cat-spot">관광지</label>
+      </div>
+    </div>
+
+    <div class="field field-row">
+      <div>
+        <label>중요도</label>
+        <div class="stars" id="stars">
+          <span class="star" data-v="1">★</span>
+          <span class="star" data-v="2">★</span>
+          <span class="star" data-v="3">★</span>
+          <span class="star" data-v="4">★</span>
+          <span class="star" data-v="5">★</span>
+        </div>
+        <input type="hidden" name="rating" id="rating" value="★★★★★" />
+      </div>
+      <div>
+        <label for="day">일차</label>
+        <input type="number" id="day" name="day" min="1" max="30" placeholder="예: 1" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="memo">메모 <span class="opt">· 방문 목적, 주의할 점</span></label>
+      <textarea id="memo" name="memo" placeholder="이곳에 가는 이유나 팁을 적어주세요." required></textarea>
+    </div>
+
+    <div class="field">
+      <label for="mapLink">구글맵 링크 <span class="opt">· 선택</span></label>
+      <input type="url" id="mapLink" name="mapLink" placeholder="https://maps.google.com/..." />
+    </div>
+
+    <button type="submit" class="submit">＋ 일정 추가하기</button>
+  </form>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="list-head">
+    <h3>등록된 일정</h3>
+  </div>
+  <div id="placesList"></div>
+
+  <footer>라오스 여행 일정 · 이 브라우저에만 저장됩니다</footer>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const STORAGE_KEY = 'laosPlaces';
+  const CATS = ['전체', '식당', '카페', '관광지'];
+  const CHIP_COLOR = { '식당': '#5b7ea8', '카페': '#7f9cbd', '관광지': '#a3b8d0' };
+
+  // ★ 여기에 사용하시던 '웹 앱 URL'을 그대로 붙여넣으세요! (선택 사항) ★
+  const SCRIPT_URL = '여기에_복사한_웹앱_URL을_붙여넣으세요';
+
+  const form = document.getElementById('planForm');
+  const placesList = document.getElementById('placesList');
+  const filtersEl = document.getElementById('filters');
+  const toast = document.getElementById('toast');
+  const ratingInput = document.getElementById('rating');
+
+  let places = loadPlaces();
+  let activeFilter = '전체';
+
+  function loadPlaces() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function persist() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(places));
+  }
+
+  // ── 별점 인터랙션 ──
+  const starEls = [...document.querySelectorAll('#stars .star')];
+  let ratingValue = 5;
+  function paintStars(n) {
+    starEls.forEach(s => s.classList.toggle('on', Number(s.dataset.v) <= n));
+  }
+  function setRating(n) {
+    ratingValue = n;
+    ratingInput.value = '★'.repeat(n);
+    paintStars(n);
+  }
+  starEls.forEach(s => {
+    s.addEventListener('mouseenter', () => paintStars(Number(s.dataset.v)));
+    s.addEventListener('click', () => setRating(Number(s.dataset.v)));
+  });
+  document.getElementById('stars').addEventListener('mouseleave', () => paintStars(ratingValue));
+  setRating(5);
+
+  // ── 토스트 ──
+  let toastTimer;
+  function showToast(msg, isErr) {
+    toast.textContent = msg;
+    toast.classList.toggle('err', !!isErr);
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  function esc(str) {
+    return String(str).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
+  // ── 필터 칩 ──
+  CATS.forEach(cat => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (cat === '전체' ? ' active' : '');
+    chip.dataset.cat = cat;
+    const dot = cat === '전체' ? '' : `<span class="dot" style="background:${CHIP_COLOR[cat]}"></span>`;
+    chip.innerHTML = dot + cat;
+    chip.addEventListener('click', () => {
+      activeFilter = cat;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderList();
+    });
+    filtersEl.appendChild(chip);
+  });
+
+  // ── 렌더링 ──
+  function renderStats() {
+    document.getElementById('statTotal').textContent = places.length;
+    document.getElementById('statFood').textContent = places.filter(p => p.category === '식당').length;
+    document.getElementById('statCafe').textContent = places.filter(p => p.category === '카페').length;
+    document.getElementById('statSpot').textContent = places.filter(p => p.category === '관광지').length;
+  }
+
+  function renderList() {
+    placesList.innerHTML = '';
+
+    const visible = activeFilter === '전체' ? places : places.filter(p => p.category === activeFilter);
+
+    if (visible.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.innerHTML = places.length === 0
+        ? `아직 등록된 일정이 없어요.<br />첫 번째 장소를 추가해보세요!`
+        : `해당 카테고리에 등록된 일정이 없어요.`;
+      placesList.appendChild(empty);
+      return;
+    }
+
+    const groups = new Map();
+    visible.forEach(p => {
+      const key = p.day ? String(p.day) : 'none';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(p);
+    });
+    const dayKeys = [...groups.keys()]
+      .filter(k => k !== 'none')
+      .sort((a, b) => Number(a) - Number(b));
+    if (groups.has('none')) dayKeys.push('none');
+
+    dayKeys.forEach(key => {
+      const section = document.createElement('div');
+      section.className = 'day-group';
+      const title = document.createElement('div');
+      title.className = 'day-title' + (key === 'none' ? ' none' : '');
+      title.innerHTML = `<span class="badge">${key === 'none' ? '일차 미정' : key + '일차'}</span><span class="line"></span>`;
+      section.appendChild(title);
+      groups.get(key).forEach(p => section.appendChild(renderItem(p)));
+      placesList.appendChild(section);
+    });
+  }
+
+  function renderItem(p) {
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.dataset.cat = p.category;
+
+    const linkHTML = p.mapLink
+      ? `<a href="${esc(p.mapLink)}" target="_blank" rel="noopener" class="map-link">구글맵</a>`
+      : '';
+
+    item.innerHTML = `
+      <div class="item-top">
+        <h4>${esc(p.placeName)} <span class="cat">${esc(p.category)}</span></h4>
+        <span class="rate">${esc(p.rating)}</span>
+      </div>
+      <p class="memo">${esc(p.memo)}</p>
+      <div class="item-actions">
+        ${linkHTML}
+        <button type="button" class="del-btn">삭제</button>
+      </div>
+    `;
+
+    item.querySelector('.del-btn').addEventListener('click', () => {
+      places = places.filter(x => x.id !== p.id);
+      persist();
+      renderStats();
+      renderList();
+      showToast('일정을 삭제했어요.');
+
+      if (SCRIPT_URL && SCRIPT_URL.indexOf('여기에_') !== 0) {
+        const delData = new FormData();
+        delData.append('action', 'delete');
+        delData.append('id', p.id);
+        fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: delData })
+          .catch(err => console.error('시트 삭제 실패', err.message));
+      }
+    });
+
+    return item;
+  }
+
+  // ── 폼 제출 ──
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const placeName = formData.get('placeName');
+    const category = formData.get('category');
+    const memo = formData.get('memo');
+    const mapLink = formData.get('mapLink');
+    const rating = formData.get('rating');
+    const dayRaw = formData.get('day');
+    const day = dayRaw ? parseInt(dayRaw, 10) : null;
+
+    if (!category) { showToast('카테고리를 선택해주세요.', true); return; }
+
+    const id = Date.now();
+    places.push({ id, placeName, category, memo, mapLink, rating, day });
+    persist();
+    renderStats();
+    renderList();
+    showToast('일정이 추가되었습니다.');
+
+    if (SCRIPT_URL && SCRIPT_URL.indexOf('여기에_') !== 0) {
+      formData.append('id', id);
+      formData.append('action', 'add');
+      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(err => console.error('시트 저장 실패', err.message));
+    }
+
+    form.reset();
+    setRating(5);
+  });
+
+  renderStats();
+  renderList();
+</script>
+
+</body>
+</html>
