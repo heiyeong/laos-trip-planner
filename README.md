@@ -1,6 +1,10 @@
-# 라오스 여행 플래너
+# 라오스 여행 플래너.
 
 > 가고 싶은 곳을 하나씩 담아 일차별로 정리하는, 나만의 라오스 여행 플래너
+
+**Live Demo** : https://heiyeong.github.io/laos-trip-planner/
+
+![라오스 여행 플래너 미리보기](screenshots.png)
 
 <br>
 
@@ -44,7 +48,8 @@
 ## 프로젝트 구조
 
 ```
-├─ laos-plan.html             # 앱 본체 (일정 등록 · 일차별 목록 · 필터 · 통계)
+├─ index.html                 # 앱 본체 (일정 등록 · 일차별 목록 · 필터 · 통계)
+├─ screenshots.png            # README용 앱 화면 미리보기
 └─ README.md                  # 프로젝트 소개 문서
 ```
 
@@ -52,13 +57,13 @@
 
 ## 로컬에서 실행하기
 
-빌드 과정이 없는 정적 페이지이므로 `laos-plan.html`을 바로 브라우저로 열면 됨
+빌드 과정이 없는 정적 페이지이므로 `index.html`을 바로 브라우저로 열면 됨
 
 ```bash
 npx serve .
 ```
 
-구글 시트 연동을 사용하려면 `laos-plan.html` 하단 스크립트의 `SCRIPT_URL`을 자신의 Google Apps Script 배포 URL로 교체 필요
+구글 시트 연동을 사용하려면 `index.html` 하단 스크립트의 `SCRIPT_URL`을 자신의 Google Apps Script 배포 URL로 교체 필요
 
 ```js
 const SCRIPT_URL = '여기에_복사한_웹앱_URL을_붙여넣으세요';
