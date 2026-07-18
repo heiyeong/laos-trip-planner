@@ -49,6 +49,8 @@
 
 ```
 ├─ index.html                 # 앱 본체 (일정 등록 · 일차별 목록 · 필터 · 통계)
+├─ favicon.png                # 파비콘
+├─ og-image.png               # 카카오톡/SNS 링크 미리보기 이미지
 ├─ screenshots.png            # README용 앱 화면 미리보기
 └─ README.md                  # 프로젝트 소개 문서
 ```
